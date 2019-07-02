@@ -1,0 +1,196 @@
+//used npm react-datepicker
+//used npm react-collapsing-table
+
+import React from "react"
+import axios from 'axios';
+import 'typeface-roboto';
+import ReactCollapsingTable from 'react-collapsing-table'
+//import TextField from '@material-ui/core/TextField';
+import DatePicker from 'react-datepicker';
+
+import "react-datepicker/dist/react-datepicker.css"
+
+
+
+
+    
+    var api_url = '<place the url of the api>';
+    
+
+
+
+class App extends React.Component{
+    
+    
+    constructor(props){
+        
+        super(props);
+        
+        this.state={
+            
+            tableData: [{}],
+            
+            direction:{
+                
+                header: 'asc',
+            },
+            
+            startDate : new Date(),
+            endDate : new Date(),
+            
+            
+        
+        
+        };
+        
+        //for the start date 
+        this.handleChangeStart = this.handleChangeStart.bind(this);
+        
+        //for the end date 
+        this.handleChangeEnd = this.handleChangeEnd.bind(this);
+
+        
+       
+      
+    }
+    
+    callapi() {
+        
+         axios.get(api_url,{
+             
+             
+             params:{
+                 
+                 startDate : '123',
+                 endDate : '456' ,
+                 
+             }
+             
+
+            }).then(response => {
+                
+                    this.setState({ tableData: response.data });
+             
+             console.log(response.startDate);
+                
+               
+            });
+        
+    }
+        
+//read about promise functions 
+    
+    componentDidMount(){
+      
+        this.callapi();   
+    }
+    
+    
+    
+//created two different functions to update two different states of the date pickers    
+    handleChangeStart(date1){
+        
+        //selected date is passed to this function
+        //every time will re-render after setting the state 
+        this.setState({ 
+            startDate: date1, //changes the new start state to the one passed from datepicker's selected
+            
+        },  this.callapi() );
+        
+        
+      
+             
+    }
+    
+  
+    
+    handleChangeEnd(date2){
+        
+        //selected date is passed this function 
+        this.setState({
+            
+            endDate : date2
+        }, this.callapi() );
+        
+       
+        
+        
+    }
+     
+      
+
+render(){
+    
+     
+//columns set the headers        
+const columns = [
+  { accessor: 'goal', label: 'goal', priorityLevel: 1, position: 1, minWidth: 200,},
+  { accessor: 'ctr', label: 'ctr', priorityLevel: 2, position: 2, minWidth: 100, },
+  { accessor: 'revenue', label: 'revenue', priorityLevel: 2, position: 2, minWidth: 100, },
+  { accessor: 'roas', label: 'roas', priorityLevel: 2, position: 2, minWidth: 100, },
+  { accessor: 'transactions', label: 'transactions', priorityLevel: 2, position: 2, minWidth: 100, },    
+  { accessor: 'report_date', label: 'report_date', priorityLevel: 2, position: 2, minWidth: 100, },
+  { accessor: 'id', label: 'id', priorityLevel: 2, position: 2, minWidth: 100, },   
+  { accessor: 'store_name', label: 'store_name', priorityLevel: 2, position: 2, minWidth: 100, },
+  { accessor: 'conversion_rate', label: 'conversion_rate', priorityLevel: 2, position: 2, minWidth: 100, },     
+  { accessor: 'cost', label: 'cost', priorityLevel: 2, position: 2, minWidth: 100, }, 
+  { accessor: 'store_transactions', label: 'store_transactions', priorityLevel: 2, position: 2, minWidth: 100, },   
+  { accessor: 'duration', label: 'duration', priorityLevel: 2, position: 2, minWidth: 100, },   
+  { accessor: 'impressions', label: 'impressions', priorityLevel: 2, position: 2, minWidth: 100, },  
+  { accessor: 'store_revenue', label: 'store_revenue', priorityLevel: 2, position: 2, minWidth: 100, },   
+  { accessor: 'split_by', label: 'split_by', priorityLevel: 2, position: 2, minWidth: 100, },   
+  { accessor: 'clicks', label: 'clicks', priorityLevel: 2, position: 2, minWidth: 100, },   
+  { accessor: 'aov', label: 'aov', priorityLevel: 2, position: 2, minWidth: 100, },   
+    
+
+]
+    
+//rows contain the data   
+var list = [];
+    
+    list = this.state.tableData; //data
+    
+    //console.log(this.state.startDate);
+      
+    return(
+            
+            
+    <div>
+        
+         
+ 
+    <h1>React Collapsing Table </h1> 
+        
+   
+    <DatePicker
+        id = 'startDate'
+        selected = {this.state.startDate} //holds the start date selected
+        onChange = {this.handleChangeStart} //once the date is changed the function is called which updates the new state of the start date
+        
+        
+        />   
+        
+     <DatePicker
+        id = 'endDate'
+        selected = {this.state.endDate} // holds the end date selected
+        onChange = {this.handleChangeEnd} //once the date is changed the function is called which updates the new state of the end date
+        />    
+        
+    
+        
+    <ReactCollapsingTable rows={ list } columns={ columns }/> 
+        
+        
+    </div>
+        
+        )
+    
+    
+}
+}
+
+export default App;
+
+
+        
+      
